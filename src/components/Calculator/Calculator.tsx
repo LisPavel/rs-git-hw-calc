@@ -1,4 +1,4 @@
-import {Button, Col, Input, Layout, Row, Typography} from 'antd';
+import {Badge, Button, Col, Input, Layout, Row, Typography} from 'antd';
 import {useState} from 'react';
 import {isEmpty} from 'lodash';
 
@@ -32,7 +32,7 @@ export const Calculator = () => {
   const calc = () => {
     const calcArr = [...historyList];
     calcArr.pop();
-    return  eval(calcArr.join(' ')) || 0;
+    return eval(calcArr.join(' ')) || 0;
   }
 
   return (
@@ -42,12 +42,19 @@ export const Calculator = () => {
     }}>
       <Layout.Content>
         <Row gutter={[0, 8]}>
-          <Col span={24}>
+          <Col span={20}>
             <Typography>
               <p>
                 {historyList.join(' ')}
               </p>
-              <p>{calc()}</p>
+            </Typography>
+          </Col>
+          <Col span={4}>
+            <Typography>
+              <Badge.Ribbon
+                color={'green'}
+                text={`= ${calc()}`}
+              />
             </Typography>
           </Col>
           <Col span={24}>
