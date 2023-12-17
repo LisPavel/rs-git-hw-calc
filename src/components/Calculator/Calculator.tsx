@@ -6,10 +6,11 @@ export const Calculator = () => {
   const numberActions: number[] = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
   const [currentNumber, setCurrentNumber] = useState<string>('');
   const mathActions: string[] = ['+', '-', '*', '/', '%'];
+  const addActions: string[] = [ 'C', 'AC', '='];
 
   const [historyList, setHistoryList] = useState<string[]>([]);
 
-  const doAction = (action: string) => {
+  const doMathAction = (action: string) => {
     const lastIndex = historyList.length - 1;
     if (!isEmpty(currentNumber)) {
       setHistoryList([...historyList, currentNumber, action]);
@@ -21,6 +22,26 @@ export const Calculator = () => {
     }
   }
 
+  const doAddAction = (action: string) => {
+    switch(action) {
+      case `AC`: {
+        setCurrentNumber('');
+        setHistoryList([]);
+        break;
+      }
+      case 'C': {
+        setCurrentNumber(prev => prev.slice(0, prev.length - 1))
+        break;
+      }
+      case '=': {
+        const currentHistory = [...historyList, currentNumber, ""];
+        setCurrentNumber(`${calc(currentHistory) || ""}`);
+        setHistoryList([]);
+        break;
+      }
+    }
+  }
+
   const onAddNumber = (newNumber: string | number) => {
     setCurrentNumber(`${currentNumber}${newNumber}`);
   }
@@ -29,8 +50,8 @@ export const Calculator = () => {
     setCurrentNumber(`${newNumber}`);
   }
 
-  const calc = () => {
-    const calcArr = [...historyList];
+  const calc = (history = historyList) => {
+    const calcArr = [...history];
     calcArr.pop();
     return eval(calcArr.join(' ')) || 0;
   }
@@ -66,7 +87,7 @@ export const Calculator = () => {
                         onChange={(e) => onChange(e.currentTarget.value)}
                       />
                     </Col>
-                    <Col span={20}>
+                    <Col span={16}>
                       <Row gutter={[8, 8]}>
                         {numberActions.map(n => (
                           <Col span={7} key={n}>
@@ -79,7 +100,16 @@ export const Calculator = () => {
                       <Row gutter={[8, 8]}>
                         {mathActions.map(n => (
                           <Col span={24} key={n}>
-                            <Button onClick={() => doAction(n)} shape={'circle'} size={'large'}>{n}</Button>
+                            <Button onClick={() => doMathAction(n)} shape={'circle'} size={'large'}>{n}</Button>
+                          </Col>
+                        ))}
+                      </Row>
+                    </Col>
+                    <Col span={4}>
+                      <Row gutter={[8, 8]}>
+                        {addActions.map(n => (
+                          <Col span={24} key={n}>
+                            <Button onClick={() => doAddAction(n)} shape={'circle'} size={'large'}>{n}</Button>
                           </Col>
                         ))}
                       </Row>
